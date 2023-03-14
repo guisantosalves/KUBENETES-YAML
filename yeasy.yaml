@@ -1,0 +1,38 @@
+# it is important to have the matchlabels of selector equals to labels of app
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleweb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simpleweb
+  template:
+    metadata:
+      labels:
+        app: simpleweb
+    spec:
+      containers:
+        - name: simpleweb
+          image: yeasy/simple-web
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          ports:
+            - containerPort: 80
+---
+# the name of service needs to be equals of our pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleweb
+spec:
+  type: NodePort
+  selector:
+    app: simpleweb
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31001
